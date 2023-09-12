@@ -5,7 +5,7 @@ NimbleMediator is a lightweight and efficient mediator pattern implementation fo
 ## Features
 
 - **Faster Performance**: Designed to offer a speed advantage over similar packages, providing quicker request and notification processing times. (***~2,5*** times faster than MediatR)
-- **Less Memory Usage**: optimized to minimize memory allocations, helping to reduce the overall memory footprint. (uses ***~10x*** less memory than MediatR)
+- **Less Memory Usage**: optimized to minimize memory allocations, helping to reduce the overall memory footprint. (uses ***~8x*** less memory than MediatR)
 - **Easy to Integrate**:  Can be easily integrated into existing .NET projects, offering a simple and similar IMediator, ISender, IPublisher interfacses.
 - **Individualized Publish Strategies**:  Allows for different publish strategies for each notification, enabling developers to choose between sequential or concurrent execution based on the specific requirements of their notification handlers.
 
@@ -107,7 +107,7 @@ Define your notifications and handlers as you would with any other mediator libr
 
 NimbleMediator is backed by Dictionaries to hold type informations etc instead of relying on runtime reflection. This approach provides a significant performance advantage over other mediator libraries.
 
-NimbleMediator is currently approximately **2,5** times faster than MediatR and uses almost **~10x** less memory.
+NimbleMediator is currently approximately **2,5** times faster than MediatR and uses almost **~8x** less memory.
 
 ![Benchmark](benchmarks/benchmarks.png)
 
