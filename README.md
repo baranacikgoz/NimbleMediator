@@ -1,6 +1,6 @@
 # NimbleMediator
 
-NimbleMediator is a lightweight and efficient mediator pattern implementation for .NET, designed to be a faster alternative to popular mediator libraries. It facilitates the implementation of the Mediator design pattern to promote a clean and maintainable code structure.
+NimbleMediator is a significantly faster, lightweight and memory-efficient mediator pattern implementation for .NET, designed to be an alternative to popular mediator libraries.
 
 ## Features
 
