@@ -109,7 +109,7 @@ NimbleMediator is backed by Dictionaries to hold type informations etc instead o
 
 NimbleMediator is currently approximately **2,5** times faster than MediatR and uses almost **~8x** less memory.
 
-![Benchmark](benchmarks/benchmarks.png)
+![Benchmark](https://github.com/baranacikgoz/NimbleMediator/blob/0bd3f27bb17ca6d064dfc5307c1e16215616139e/benchmarks/benchmarks.png)
 
 ### Contributing
 
