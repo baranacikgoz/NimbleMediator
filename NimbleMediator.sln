@@ -5,9 +5,31 @@ VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{06B6F282-1C5D-4E62-B583-93D010553BFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbleMediator", "src\NimbleMediator\NimbleMediator.csproj", "{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NimbleMediator", "src\NimbleMediator\NimbleMediator.csproj", "{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3379F0DA-B4C0-447C-B406-AE0F93E5510C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{A2AD59B6-3D96-441B-88F8-79CD2C9EEBF7}"
+	ProjectSection(SolutionItems) = preProject
+		benchmarks\benchmarks.png = benchmarks\benchmarks.png
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediatorsBenchmark", "benchmarks\MediatorsBenchmark\MediatorsBenchmark.csproj", "{749D1503-5255-4C90-BFF9-7FAD135C4AE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{42714D44-2B41-40C6-8E9C-AD88D1CCEF12}"
+	ProjectSection(SolutionItems) = preProject
+		assets\logo.png = assets\logo.png
+		assets\logo_128.png = assets\logo_128.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F82D56AF-9485-4A4E-8145-99B761FB110B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +41,10 @@ Global
 		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{749D1503-5255-4C90-BFF9-7FAD135C4AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{749D1503-5255-4C90-BFF9-7FAD135C4AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{749D1503-5255-4C90-BFF9-7FAD135C4AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{749D1503-5255-4C90-BFF9-7FAD135C4AE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -26,6 +52,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C} = {06B6F282-1C5D-4E62-B583-93D010553BFC}
 		{3379F0DA-B4C0-447C-B406-AE0F93E5510C} = {06B6F282-1C5D-4E62-B583-93D010553BFC}
+		{749D1503-5255-4C90-BFF9-7FAD135C4AE1} = {A2AD59B6-3D96-441B-88F8-79CD2C9EEBF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {475E1217-4E58-4412-B9AE-66AB47E6C6F2}
