@@ -14,6 +14,7 @@ public class NimbleMediatorConfig
     private readonly IServiceCollection _services;
     private readonly Dictionary<Type, Type> _requestsAndHandlerTypes;
     private readonly Dictionary<Type, NotificationPublisherType> _publisherTypeMappings;
+    private NotificationPublisherType _defaultPublisherType = NotificationPublisherType.Foreach;
 
     public NimbleMediatorConfig(IServiceCollection services)
     {
@@ -27,7 +28,7 @@ public class NimbleMediatorConfig
     /// <summary>
     /// Registers all requests, notifications and respective handlers from the given assembly.
     /// Notifications are registered with <see cref="NotificationPublisherType.Foreach"/> by default.
-    /// You can change the publisher type for a notification type by calling <see cref="SetNotificationHandlerPublisherType{TNotification}(NotificationPublisherType)"/>.
+    /// You can change the publisher type for a notification type by calling <see cref="SetNotificationPublisherType{TNotification}(NotificationPublisherType)"/>.
     /// </summary>
     /// <param name="assembly"></param>
     public void RegisterHandlersFromAssembly(Assembly assembly)
@@ -37,12 +38,19 @@ public class NimbleMediatorConfig
     }
 
     /// <summary>
+    /// Sets the default publisher type for notifications.
+    /// </summary>
+    /// <param name="publisherType"></param>
+    public void SetDefaultNotificationPublisherType(NotificationPublisherType publisherType)
+        => _defaultPublisherType = publisherType;
+
+    /// <summary>
     /// Sets the publisher type for the given notification type.
     /// </summary>
     /// <typeparam name="TNotification"></typeparam>
     /// <param name="publisherType"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void SetNotificationHandlerPublisherType<TNotification>(NotificationPublisherType publisherType)
+    public void SetNotificationPublisherType<TNotification>(NotificationPublisherType publisherType)
         where TNotification : INotification
     {
         var notificationType = typeof(TNotification);
@@ -89,11 +97,11 @@ public class NimbleMediatorConfig
 
                     if (!_publisherTypeMappings.ContainsKey(notificationType))
                     {
-                        _publisherTypeMappings.Add(notificationType, NotificationPublisherType.Foreach);
+                        _publisherTypeMappings.Add(notificationType, _defaultPublisherType);
                     }
                     else
                     {
-                        _publisherTypeMappings[notificationType] = NotificationPublisherType.Foreach;
+                        _publisherTypeMappings[notificationType] = _defaultPublisherType;
                     }
                 }
             }

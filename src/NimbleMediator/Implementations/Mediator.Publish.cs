@@ -15,9 +15,10 @@ public partial class Mediator
     /// <exception cref="InvalidOperationException">Thrown when no publisher type is registered for the notification type.</exception>
     /// <exception cref="AggregateException">Thrown when one or more notification handlers fail.</exception>
     public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken)
-        where TNotification : INotification
+    where TNotification : INotification
     {
-        var handlers = _serviceProvider.GetServices<INotificationHandler<TNotification>>().ToArray();
+        var handlers = _serviceProvider.GetServices<INotificationHandler<TNotification>>();
+
         if (!_publisherTypeMappings.TryGetValue(typeof(TNotification), out var publisherType))
         {
             throw new InvalidOperationException($"No publisher type registered for {typeof(TNotification).Name}");
@@ -25,10 +26,10 @@ public partial class Mediator
 
         if (publisherType == NotificationPublisherType.TaskWhenAll)
         {
-            Task[] tasks = new Task[handlers.Length];
-            for (int i = 0; i < handlers.Length; i++)
+            var tasks = new List<Task>();
+            foreach (var handler in handlers)
             {
-                tasks[i] = handlers[i].HandleAsync(notification, cancellationToken);
+                tasks.Add(handler.HandleAsync(notification, cancellationToken));
             }
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -37,10 +38,7 @@ public partial class Mediator
 
         // publisherType is NotificationPublisherType.Foreach here:
 
-        int maxExceptionCount = handlers.Length;
-        Exception[] exceptions = new Exception[maxExceptionCount];
-        int index = 0;
-        bool hasException = false;
+        List<Exception>? exceptions = null;
 
         foreach (var handler in handlers)
         {
@@ -50,18 +48,17 @@ public partial class Mediator
             }
             catch (Exception ex)
             {
-                exceptions[index] = ex;
-                index++;
-                if (!hasException)
-                {
-                    hasException = true;
-                }
+#pragma warning disable CA1508 // Avoid dead conditional code
+                exceptions ??= new List<Exception>();
+#pragma warning restore CA1508 // Avoid dead conditional code
+
+                exceptions.Add(ex);
             }
         }
 
-        if (hasException)
+        if (exceptions != null)
         {
-            throw new AggregateException("One or more notification handlers failed.", exceptions[..index]);
+            throw new AggregateException("One or more notification handlers failed.", exceptions);
         }
     }
 }

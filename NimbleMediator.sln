@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NimbleMediator", "NimbleMediator.csproj", "{BADDF9B1-20C5-417D-9F60-307FA39BBD1B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{06B6F282-1C5D-4E62-B583-93D010553BFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbleMediator", "src\NimbleMediator\NimbleMediator.csproj", "{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3379F0DA-B4C0-447C-B406-AE0F93E5510C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +15,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BADDF9B1-20C5-417D-9F60-307FA39BBD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BADDF9B1-20C5-417D-9F60-307FA39BBD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BADDF9B1-20C5-417D-9F60-307FA39BBD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BADDF9B1-20C5-417D-9F60-307FA39BBD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{203AEF6B-8DE8-4B2C-A3A4-9522A458F41C} = {06B6F282-1C5D-4E62-B583-93D010553BFC}
+		{3379F0DA-B4C0-447C-B406-AE0F93E5510C} = {06B6F282-1C5D-4E62-B583-93D010553BFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {475E1217-4E58-4412-B9AE-66AB47E6C6F2}
