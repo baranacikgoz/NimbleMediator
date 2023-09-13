@@ -62,7 +62,7 @@ Notice that ``ValueTask`` is used instead of ``Task`` to reduce memory allocatio
         public string Name { get; set; }
     }
 
-    public class MyRequestHandler : IRequestHandler<Request1, string>
+    public class MyRequestHandler : IRequestHandler<MyRequest, string>
     {
         public ValueTask<string> Handle(Request1 request, CancellationToken cancellationToken)
         {
@@ -70,7 +70,7 @@ Notice that ``ValueTask`` is used instead of ``Task`` to reduce memory allocatio
 
             if(someCondition)
             {
-                return request.Name;
+                return "NimbleMediator";
             }
 
             var result = await SomeAsyncTask();
