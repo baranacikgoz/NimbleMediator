@@ -15,11 +15,15 @@ public static class ServiceCollectionExtensions
         var publisherTypeMappings = new Dictionary<Type, NotificationPublisherType>();
         services.AddSingleton(publisherTypeMappings);
 
-        services.AddSingleton<IMediator, Mediator>(sp =>
+        services.AddSingleton<Mediator>(sp =>
             new Mediator(
                     sp,
                     sp.GetRequiredService<Dictionary<Type, Type>>(),
                     sp.GetRequiredService<Dictionary<Type, NotificationPublisherType>>()));
+
+        services.AddSingleton<ISender>(sp => sp.GetRequiredService<Mediator>());
+        services.AddSingleton<IPublisher>(sp => sp.GetRequiredService<Mediator>());
+        services.AddSingleton<IMediator>(sp => sp.GetRequiredService<Mediator>());
 
         var config = new NimbleMediatorConfig(services);
 
