@@ -42,11 +42,12 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageIcon>logo_128.png</PackageIcon>
+
+    <ReleaseNotes>
+      - Registered ISender and IPublisher also to the DI. This was forgotten in the initial release.
+    </ReleaseNotes>
   </PropertyGroup>
 
-  <ReleaseNotes>
-    - Registered ISender and IPublisher also to the DI. This was forgotten in the initial release.
-  </ReleaseNotes>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
