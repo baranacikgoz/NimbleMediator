@@ -31,22 +31,22 @@ Register your handlers from the assembly:
 
 #### Set default publishing strategy
 Set the default publishing strategy for all notifications.
-It is ``PublishStrategy.Foreach`` by default if you don't set it.
+It is ``NotificationPublisherType.Foreach`` by default if you don't set it.
 
 ```csharp
 
-    cfg.SetDefaultNotificationPublisherType(PublishStrategy.TaskWhenAll);
+    cfg.SetDefaultNotificationPublisherType(NotificationPublisherType.TaskWhenAll);
 
 ```
 
 #### Set an individual publishing strategy for a notification
-Even the default strategy is different, you can set an individual strategy for a notification.
+Even the default strategy might be different, you can set an individual strategy for a notification.
 
 ```csharp
 
-    cfg.SetNotificationPublisherType<MyRequest1>(PublishStrategy.Foreach);
+    cfg.SetNotificationPublisherType<MyRequest1>(NotificationPublisherType.Foreach);
 
-    cfg.SetNotificationPublisherType<MyRequest2>(PublishStrategy.TaskWhenAll);
+    cfg.SetNotificationPublisherType<MyRequest2>(NotificationPublisherType.TaskWhenAll);
 
 ```
 
@@ -62,7 +62,7 @@ Notice that ``ValueTask`` is used instead of ``Task`` to reduce memory allocatio
         public string Name { get; set; }
     }
 
-    public class MyRequestHandler : IRequestHandler<Request1, string>
+    public class MyRequestHandler : IRequestHandler<MyRequest, string>
     {
         public ValueTask<string> Handle(Request1 request, CancellationToken cancellationToken)
         {
@@ -70,7 +70,7 @@ Notice that ``ValueTask`` is used instead of ``Task`` to reduce memory allocatio
 
             if(someCondition)
             {
-                return request.Name;
+                return "NimbleMediator";
             }
 
             var result = await SomeAsyncTask();
