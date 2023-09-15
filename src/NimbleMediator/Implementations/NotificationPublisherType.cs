@@ -8,7 +8,7 @@ public enum NotificationPublisherType
     /// <summary>
     /// Publishes notifications by sequentially awaiting with a loop.
     /// </summary>
-    Foreach,
+    ForeachAwait,
 
     /// <summary>
     /// Publishes notifications by awaiting with Task.WhenAll().
