@@ -44,9 +44,9 @@ Even the default strategy is different, you can set an individual strategy for a
 
 ```csharp
 
-    cfg.SetNotificationPublisherType<MyRequest1>(PublishStrategy.Foreach);
+    cfg.SetNotificationPublisherType<MyRequest1>(NotificationPublisherType.Foreach);
 
-    cfg.SetNotificationPublisherType<MyRequest2>(PublishStrategy.TaskWhenAll);
+    cfg.SetNotificationPublisherType<MyRequest2>(NotificationPublisherType.TaskWhenAll);
 
 ```
 
