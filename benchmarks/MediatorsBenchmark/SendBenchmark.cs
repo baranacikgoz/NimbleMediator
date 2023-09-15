@@ -8,27 +8,24 @@ using MediatR.NotificationPublishers;
 namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
-public class ConcurrentBenchmark
+public class SendBenchmark
 {
     private MediatR.IMediator _mediatR;
     private NimbleMediator.Contracts.IMediator _nimbleMediator;
 
     [GlobalSetup]
-    public void ConcurrentSetup()
+    public void GlobalSetup()
     {
         var services = new ServiceCollection();
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterHandlersFromAssembly(typeof(CreateUserRequestNimbleMediator).Assembly);
-            // config.SetNotificationPublisherType<UserRegisteredNimbleNotification>(NotificationPublisherType.TaskWhenAll);
-            config.SetDefaultNotificationPublisherType(NotificationPublisherType.TaskWhenAll);
+            config.RegisterHandlersFromAssembly(typeof(NimbleMediatorRequest).Assembly);
         });
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(CreateUserRequestMediatR).Assembly);
-            cfg.NotificationPublisher = new TaskWhenAllPublisher();
+            cfg.RegisterServicesFromAssembly(typeof(MediatRRequest).Assembly);
         });
 
         var provider = services.BuildServiceProvider();
@@ -38,14 +35,14 @@ public class ConcurrentBenchmark
     }
 
     [Benchmark]
-    public async Task PublishConcurrentWithMediatR()
+    public async Task<string> SendWithMediatR()
     {
-        await _mediatR.Publish(new UserRegisteredMediatRNotification(), CancellationToken.None);
+        return await _mediatR.Send(new MediatRRequest(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task PublishConcurrentWithNimbleMediator()
+    public async ValueTask<string> SendWithNimbleMediator()
     {
-        await _nimbleMediator.PublishAsync(new UserRegisteredNimbleNotification(), CancellationToken.None);
+        return await _nimbleMediator.SendAsync<NimbleMediatorRequest, string>(new NimbleMediatorRequest(), CancellationToken.None);
     }
 }

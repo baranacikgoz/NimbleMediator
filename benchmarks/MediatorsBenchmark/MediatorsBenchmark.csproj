@@ -4,7 +4,14 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.13.8" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="NimbleMediator" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Notifications\WithMultipleHandlers\WithExceptions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NimbleMediator\NimbleMediator.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
