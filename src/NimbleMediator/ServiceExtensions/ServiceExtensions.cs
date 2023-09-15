@@ -15,10 +15,9 @@ public static class ServiceCollectionExtensions
         var publisherTypeMappings = new Dictionary<Type, NotificationPublisherType>();
         services.AddSingleton(publisherTypeMappings);
 
-        services.AddSingleton<Mediator>(sp =>
+        services.AddSingleton(sp =>
             new Mediator(
                     sp,
-                    sp.GetRequiredService<Dictionary<Type, Type>>(),
                     sp.GetRequiredService<Dictionary<Type, NotificationPublisherType>>()));
 
         services.AddSingleton<ISender>(sp => sp.GetRequiredService<Mediator>());

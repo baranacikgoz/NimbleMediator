@@ -12,16 +12,14 @@ namespace NimbleMediator;
 public class NimbleMediatorConfig
 {
     private readonly IServiceCollection _services;
-    private readonly Dictionary<Type, Type> _requestsAndHandlerTypes;
     private readonly Dictionary<Type, NotificationPublisherType> _publisherTypeMappings;
-    private NotificationPublisherType _defaultPublisherType = NotificationPublisherType.Foreach;
+    private NotificationPublisherType _defaultPublisherType = NotificationPublisherType.ForeachAwait;
 
     public NimbleMediatorConfig(IServiceCollection services)
     {
         _services = services;
         var serviceCollection = _services.BuildServiceProvider();
 
-        _requestsAndHandlerTypes = serviceCollection.GetRequiredService<Dictionary<Type, Type>>();
         _publisherTypeMappings = serviceCollection.GetRequiredService<Dictionary<Type, NotificationPublisherType>>();
     }
 
@@ -73,14 +71,12 @@ public class NimbleMediatorConfig
                     && (@interface.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)
                         || @interface.GetGenericTypeDefinition() == typeof(IRequestHandler<>)))
                 {
-                    var requestType = @interface.GetGenericArguments()[0];
-                    var handlerType = type;
-                    _services.AddTransient(handlerType);
-                    _requestsAndHandlerTypes[requestType] = handlerType;
+                    _services.AddTransient(@interface, type);
                 }
             }
         }
     }
+
 
     private void RegisterNotificationsFromAssembly(Assembly assembly)
     {

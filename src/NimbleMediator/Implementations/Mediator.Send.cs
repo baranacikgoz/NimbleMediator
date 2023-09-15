@@ -16,18 +16,7 @@ public partial class Mediator
     public ValueTask SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
         where TRequest : IRequest
     {
-        if (!_requestsAndHandlers.TryGetValue(typeof(TRequest), out var handlerType))
-        {
-            throw new InvalidOperationException($"No handler registered for {typeof(TRequest).Name}");
-        }
-
-        var service = _serviceProvider.GetRequiredService(handlerType); // maybe do type check here?
-
-        if (service is not IRequestHandler<TRequest> handler)
-        {
-            throw new InvalidOperationException($"Handler for {typeof(TRequest).Name} does not implement IRequestHandler<{typeof(TRequest).Name}>");
-        }
-
+        var handler = _serviceProvider.GetRequiredService<IRequestHandler<TRequest>>();
         return handler.HandleAsync(request, cancellationToken);
     }
 
@@ -44,18 +33,8 @@ public partial class Mediator
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
     {
-        if (!_requestsAndHandlers.TryGetValue(typeof(TRequest), out var handlerType))
-        {
-            throw new InvalidOperationException($"No handler registered for {typeof(TRequest).Name}");
-        }
 
-        var service = _serviceProvider.GetRequiredService(handlerType); // maybe do type check here?
-
-        if (service is not IRequestHandler<TRequest, TResponse> handler)
-        {
-            throw new InvalidOperationException($"Handler for {typeof(TRequest).Name} does not implement IRequestHandler<{typeof(TRequest).Name}, {typeof(TResponse).Name}>");
-        }
-
+        var handler = _serviceProvider.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
         return handler.HandleAsync(request, cancellationToken);
     }
 }
