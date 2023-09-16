@@ -14,7 +14,6 @@ public partial class Mediator
     /// <param name="notification"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Thrown when no publisher type is registered for the notification type.</exception>
     /// <exception cref="AggregateException">Thrown when one or more notification handlers fail.</exception>
     public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken)
     where TNotification : INotification

@@ -12,7 +12,6 @@ public partial class Mediator
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Thrown when no handler is registered for the request type.</exception>
     public ValueTask SendAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
         where TRequest : IRequest
     {
@@ -28,7 +27,6 @@ public partial class Mediator
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    /// <exception cref="InvalidOperationException">Thrown when no handler is registered for the request type.</exception>
     public ValueTask<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
