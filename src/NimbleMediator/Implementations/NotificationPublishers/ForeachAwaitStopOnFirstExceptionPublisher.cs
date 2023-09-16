@@ -42,7 +42,7 @@ public class ForeachAwaitStopOnFirstExceptionPublisher : INotificationPublisher
     // This method is extracted to avoid call 'await' inside the PublishAsync method,
     // thus preventing the creation of an additional state machine and reducing overhead. 
     // The state machine will only be created when the user calls the PublishAsync method outside of the library.
-    // Yes, it seems like even beyond micro-optimization, but make difference in benchmarks high-throughput scenarios.
+    // Yes, it seems like even beyond micro-optimization, but makes difference in benchmarks and high-throughput scenarios.
     private static async Task PublishAsyncInternal<TNotification>(TNotification notification, INotificationHandler<TNotification>[] handlersArray, CancellationToken cancellationToken)
         where TNotification : INotification
     {
