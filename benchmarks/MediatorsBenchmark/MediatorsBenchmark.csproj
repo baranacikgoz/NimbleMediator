@@ -7,10 +7,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Notifications\WithMultipleHandlers\WithExceptions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\NimbleMediator\NimbleMediator.csproj" />
   </ItemGroup>
 

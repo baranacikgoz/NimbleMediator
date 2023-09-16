@@ -52,13 +52,13 @@ public class TaskWhenAllBenchmark
     [Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers()
     {
-        await _mediatR.Publish(new MediatRNotificationWithMultipleHandlers(), CancellationToken.None);
+        await _mediatR.Publish(new MediatRNotificationWith3Handlers(), CancellationToken.None);
     }
 
     [Benchmark]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_3_handlers()
     {
-        await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithMultipleHandlers(), CancellationToken.None);
+        await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWith3Handlers(), CancellationToken.None);
     }
 
 }
