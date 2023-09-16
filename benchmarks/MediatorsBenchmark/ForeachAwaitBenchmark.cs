@@ -35,25 +35,25 @@ public class ForeachAwaitBenchmark
     }
 
     [Benchmark]
-    public async Task Publish_ForeachAwait_with_MediatR_the_notification_has_single_handler()
+    public async Task MediatR_Publish_ForeachAwait_notification_has_single_handler()
     {
         await _mediatR.Publish(new MediatRNotificationWithSingleHandler(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task Publish_ForeachAwait_with_Nimble_Mediator_the_notification_has_single_handler()
+    public async Task NimbleMediator_Publish_ForeachAwait_notification_has_single_handler()
     {
         await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithSingleHandler(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task Publish_ForeachAwait_with_MediatR_the_notification_has_multiple_handlers()
+    public async Task MediatR_Publish_ForeachAwait_notification_has_multiple_handlers()
     {
         await _mediatR.Publish(new MediatRNotificationWithMultipleHandlers(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task Publish_ForeachAwait_with_Nimble_Mediator_the_notification_has_multiple_handlers()
+    public async Task NimbleMediator_Publish_ForeachAwait_notification_has_multiple_handlers()
     {
         await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithMultipleHandlers(), CancellationToken.None);
     }

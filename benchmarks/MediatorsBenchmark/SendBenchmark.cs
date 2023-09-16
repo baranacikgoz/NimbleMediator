@@ -35,13 +35,13 @@ public class SendBenchmark
     }
 
     [Benchmark]
-    public async Task<string> SendWithMediatR()
+    public async Task<string> MediatR_Send()
     {
         return await _mediatR.Send(new MediatRRequest(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async ValueTask<string> SendWithNimbleMediator()
+    public async ValueTask<string> NimbleMediator_Send()
     {
         return await _nimbleMediator.SendAsync<NimbleMediatorRequest, string>(new NimbleMediatorRequest(), CancellationToken.None);
     }
