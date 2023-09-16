@@ -23,7 +23,7 @@ public class ForeachAwaitRobustPublisher : INotificationPublisher
     /// <remarks>
     /// If only a single handler is registered and it throws an exception, that exception will be thrown directly, not wrapped in an AggregateException.
     /// </remarks>
-    public async Task PublishAsync<TNotification>(TNotification notification, IEnumerable<INotificationHandler<TNotification>> handlers, CancellationToken cancellationToken)
+    public Task PublishAsync<TNotification>(TNotification notification, IEnumerable<INotificationHandler<TNotification>> handlers, CancellationToken cancellationToken)
         where TNotification : INotification
     {
         if (handlers is not INotificationHandler<TNotification>[] handlersArray)
@@ -35,10 +35,18 @@ public class ForeachAwaitRobustPublisher : INotificationPublisher
         // no need for a loop's overhead.
         if (handlersArray.Length == 1)
         {
-            await handlersArray[0].HandleAsync(notification, cancellationToken).ConfigureAwait(false);
-            return;
+            return handlersArray[0].HandleAsync(notification, cancellationToken);
         }
 
+        return PublishAsyncInternal(notification, handlersArray, cancellationToken);
+    }
+
+    // This method is extracted to avoid call 'await' inside the PublishAsync method,
+    // thus preventing the creation of an additional state machine and reducing overhead. 
+    // The state machine will only be created when the user calls the PublishAsync method outside of the library.
+    // Yes, it seems like even beyond micro-optimization, but make difference in benchmarks high-throughput scenarios.
+    private static async Task PublishAsyncInternal<TNotification>(TNotification notification, INotificationHandler<TNotification>[] handlersArray, CancellationToken cancellationToken) where TNotification : INotification
+    {
         List<Exception>? exceptions = null;
 
         for (int i = 0; i < handlersArray.Length; i++)

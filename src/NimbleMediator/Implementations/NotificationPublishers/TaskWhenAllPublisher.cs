@@ -4,7 +4,7 @@ namespace NimbleMediator.NotificationPublishers;
 
 public class TaskWhenAllPublisher : INotificationPublisher
 {
-    public async Task PublishAsync<TNotification>(TNotification notification, IEnumerable<INotificationHandler<TNotification>> handlers, CancellationToken cancellationToken)
+    public Task PublishAsync<TNotification>(TNotification notification, IEnumerable<INotificationHandler<TNotification>> handlers, CancellationToken cancellationToken)
         where TNotification : INotification
     {
         if (handlers is not INotificationHandler<TNotification>[] handlersArray)
@@ -17,8 +17,7 @@ public class TaskWhenAllPublisher : INotificationPublisher
         if (handlersArray.Length == 1)
         {
 
-            await handlersArray[0].HandleAsync(notification, cancellationToken).ConfigureAwait(false);
-            return;
+            return handlersArray[0].HandleAsync(notification, cancellationToken);
         }
 
         // If there are more than one handlers, allocate an array and use Task.WhenAll.
@@ -29,6 +28,6 @@ public class TaskWhenAllPublisher : INotificationPublisher
             tasks[i] = handlersArray[i].HandleAsync(notification, cancellationToken);
         }
 
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        return Task.WhenAll(tasks);
     }
 }
