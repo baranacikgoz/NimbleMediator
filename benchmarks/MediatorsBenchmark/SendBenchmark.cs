@@ -29,14 +29,8 @@ public class SendBenchmark
         _mediatR = provider.GetRequiredService<MediatR.IMediator>();
         _nimbleMediator = provider.GetRequiredService<NimbleMediator.Contracts.IMediator>();
     }
-    private MediatR.IMediator _mediatR;
-    private NimbleMediator.Contracts.IMediator _nimbleMediator;
-
-    [Benchmark]
-    public async Task<string> MediatR_Send()
-    {
-        return await _mediatR.Send(new MediatRRequest(), CancellationToken.None);
-    }
+    private readonly MediatR.IMediator _mediatR;
+    private readonly NimbleMediator.Contracts.IMediator _nimbleMediator;
 
     [Benchmark]
     public async ValueTask<string> NimbleMediator_Send()
@@ -45,16 +39,9 @@ public class SendBenchmark
     }
 
     [Benchmark]
-    public async Task<string> MediatR_Send_ThrowsException()
+    public async Task<string> MediatR_Send()
     {
-        try
-        {
-            return await _mediatR.Send(new MediatRRequestThrowsException(), CancellationToken.None);
-        }
-        catch (Exception)
-        {
-            return "Benchmark";
-        }
+        return await _mediatR.Send(new MediatRRequest(), CancellationToken.None);
     }
 
     [Benchmark]
@@ -63,6 +50,19 @@ public class SendBenchmark
         try
         {
             return await _nimbleMediator.SendAsync<NimbleMediatorRequestThrowsException, string>(new NimbleMediatorRequestThrowsException(), CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            return "Benchmark";
+        }
+    }
+
+    [Benchmark]
+    public async Task<string> MediatR_Send_ThrowsException()
+    {
+        try
+        {
+            return await _mediatR.Send(new MediatRRequestThrowsException(), CancellationToken.None);
         }
         catch (Exception)
         {

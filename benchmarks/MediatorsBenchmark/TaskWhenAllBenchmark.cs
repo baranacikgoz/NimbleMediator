@@ -16,9 +16,7 @@ public class TaskWhenAllBenchmark
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherLifetime(ServiceLifetime.Singleton);
             config.SetDefaultNotificationPublisherType<NimbleMediator.NotificationPublishers.TaskWhenAllPublisher>();
-
             config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
 
         });
@@ -39,21 +37,15 @@ public class TaskWhenAllBenchmark
 
 
     [Benchmark]
-    public async Task MediatR_Publish_TaskWhenAll_notification_has_1_handler()
-    {
-        await _mediatR.Publish(new MediatRNotificationWithSingleHandler(), CancellationToken.None);
-    }
-
-    [Benchmark]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_1_handler()
     {
         await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithSingleHandler(), CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers()
+    public async Task MediatR_Publish_TaskWhenAll_notification_has_1_handler()
     {
-        await _mediatR.Publish(new MediatRNotificationWith3Handlers(), CancellationToken.None);
+        await _mediatR.Publish(new MediatRNotificationWithSingleHandler(), CancellationToken.None);
     }
 
     [Benchmark]
@@ -63,16 +55,9 @@ public class TaskWhenAllBenchmark
     }
 
     [Benchmark]
-    public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers_1_throws_exception()
+    public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers()
     {
-        try
-        {
-            await _mediatR.Publish(new MediatRNotificationWith3Handlers1ThrowsException(), CancellationToken.None);
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
+        await _mediatR.Publish(new MediatRNotificationWith3Handlers(), CancellationToken.None);
     }
 
     [Benchmark]
@@ -88,4 +73,16 @@ public class TaskWhenAllBenchmark
         }
     }
 
+    [Benchmark]
+    public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers_1_throws_exception()
+    {
+        try
+        {
+            await _mediatR.Publish(new MediatRNotificationWith3Handlers1ThrowsException(), CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+    }
 }
