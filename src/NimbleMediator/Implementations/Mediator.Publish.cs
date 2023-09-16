@@ -13,7 +13,7 @@ public partial class Mediator
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="AggregateException">Thrown when one or more notification handlers fail.</exception>
-    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken)
+    public Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken)
     where TNotification : INotification
     {
         if (!_publisherTypeMappings.TryGetValue(typeof(TNotification), out var publisherType))
@@ -25,6 +25,6 @@ public partial class Mediator
 
         var publisher = (INotificationPublisher)_serviceProvider.GetRequiredService(publisherType);
 
-        await publisher.PublishAsync(notification, handlers, cancellationToken).ConfigureAwait(false);
+        return publisher.PublishAsync(notification, handlers, cancellationToken);
     }
 }
