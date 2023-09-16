@@ -10,25 +10,23 @@ namespace MediatorsBenchmark;
 [MemoryDiagnoser]
 public class TaskWhenAllBenchmark
 {
-    private MediatR.IMediator _mediatR;
-    private NimbleMediator.Contracts.IMediator _nimbleMediator;
-
-    [GlobalSetup]
-    public void TaskWhenAllSetup()
+    public TaskWhenAllBenchmark()
     {
         var services = new ServiceCollection();
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterHandlersFromAssembly(typeof(NimbleMediatorRequest).Assembly);
-            // config.SetNotificationPublisherType<UserRegisteredNimbleNotification>(NotificationPublisherType.TaskWhenAll);
-            config.SetDefaultNotificationPublisherType(NotificationPublisherType.TaskWhenAll);
+            config.SetDefaultNotificationPublisherLifetime(ServiceLifetime.Singleton);
+            config.SetDefaultNotificationPublisherType<NimbleMediator.NotificationPublishers.TaskWhenAllPublisher>();
+
+            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
+
         });
 
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(MediatRRequest).Assembly);
-            cfg.NotificationPublisher = new TaskWhenAllPublisher();
+            cfg.NotificationPublisher = new MediatR.NotificationPublishers.TaskWhenAllPublisher();
         });
 
         var provider = services.BuildServiceProvider();
@@ -36,6 +34,9 @@ public class TaskWhenAllBenchmark
         _mediatR = provider.GetRequiredService<MediatR.IMediator>();
         _nimbleMediator = provider.GetRequiredService<NimbleMediator.Contracts.IMediator>();
     }
+    private readonly MediatR.IMediator _mediatR;
+    private readonly NimbleMediator.Contracts.IMediator _nimbleMediator;
+
 
     [Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_1_handler()
@@ -59,6 +60,32 @@ public class TaskWhenAllBenchmark
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_3_handlers()
     {
         await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWith3Handlers(), CancellationToken.None);
+    }
+
+    [Benchmark]
+    public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers_1_throws_exception()
+    {
+        try
+        {
+            await _mediatR.Publish(new MediatRNotificationWith3Handlers1ThrowsException(), CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+    }
+
+    [Benchmark]
+    public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_3_handlers_1_throws_exception()
+    {
+        try
+        {
+            await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWith3Handlers1ThrowsException(), CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
     }
 
 }

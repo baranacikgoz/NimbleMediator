@@ -1,9 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
-using NimbleMediator;
 using Microsoft.Extensions.DependencyInjection;
+using NimbleMediator;
+using NimbleMediator.NotificationPublishers;
 using NimbleMediator.ServiceExtensions;
-using NimbleMediator.Implementations;
-using MediatR.NotificationPublishers;
 
 namespace MediatorsBenchmark;
 
@@ -16,12 +15,15 @@ public class ForeachAwaitBenchmark
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterHandlersFromAssembly(typeof(NimbleMediatorRequest).Assembly);
+            config.SetDefaultNotificationPublisherLifetime(ServiceLifetime.Singleton);
+            config.SetDefaultNotificationPublisherType<ForeachAwaitStopOnFirstExceptionPublisher>();
+            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
         });
 
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(MediatRRequest).Assembly);
+            cfg.NotificationPublisher = new MediatR.NotificationPublishers.ForeachAwaitPublisher();
         });
 
         var provider = services.BuildServiceProvider();
@@ -33,29 +35,29 @@ public class ForeachAwaitBenchmark
     private readonly NimbleMediator.Contracts.IMediator _nimbleMediator;
 
 
-    [Benchmark]
-    public async Task MediatR_Publish_ForeachAwait_notification_has_1_handler()
-    {
-        await _mediatR.Publish(new MediatRNotificationWithSingleHandler(), CancellationToken.None);
-    }
+    // [Benchmark]
+    // public async Task MediatR_Publish_ForeachAwait_notification_has_1_handler()
+    // {
+    //     await _mediatR.Publish(new MediatRNotificationWithSingleHandler(), CancellationToken.None);
+    // }
 
-    [Benchmark]
-    public async Task NimbleMediator_Publish_ForeachAwait_notification_has_1_handler()
-    {
-        await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithSingleHandler(), CancellationToken.None);
-    }
+    // [Benchmark]
+    // public async Task NimbleMediator_Publish_ForeachAwait_notification_has_1_handler()
+    // {
+    //     await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWithSingleHandler(), CancellationToken.None);
+    // }
 
-    [Benchmark]
-    public async Task MediatR_Publish_ForeachAwait_notification_has_3_handlers()
-    {
-        await _mediatR.Publish(new MediatRNotificationWith3Handlers(), CancellationToken.None);
-    }
+    // [Benchmark]
+    // public async Task MediatR_Publish_ForeachAwait_notification_has_3_handlers()
+    // {
+    //     await _mediatR.Publish(new MediatRNotificationWith3Handlers(), CancellationToken.None);
+    // }
 
-    [Benchmark]
-    public async Task NimbleMediator_Publish_ForeachAwait_notification_has_3_handlers()
-    {
-        await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWith3Handlers(), CancellationToken.None);
-    }
+    // [Benchmark]
+    // public async Task NimbleMediator_Publish_ForeachAwait_notification_has_3_handlers()
+    // {
+    //     await _nimbleMediator.PublishAsync(new NimbleMediatorNotificationWith3Handlers(), CancellationToken.None);
+    // }
 
     [Benchmark]
     public async Task MediatR_Publish_ForeachAwait_notification_has_3_handlers_1_throws_exception()

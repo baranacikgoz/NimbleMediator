@@ -10,17 +10,13 @@ namespace MediatorsBenchmark;
 [MemoryDiagnoser]
 public class SendBenchmark
 {
-    private MediatR.IMediator _mediatR;
-    private NimbleMediator.Contracts.IMediator _nimbleMediator;
-
-    [GlobalSetup]
-    public void GlobalSetup()
+    public SendBenchmark()
     {
         var services = new ServiceCollection();
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterHandlersFromAssembly(typeof(NimbleMediatorRequest).Assembly);
+            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
         });
 
         services.AddMediatR(cfg =>
@@ -33,6 +29,8 @@ public class SendBenchmark
         _mediatR = provider.GetRequiredService<MediatR.IMediator>();
         _nimbleMediator = provider.GetRequiredService<NimbleMediator.Contracts.IMediator>();
     }
+    private MediatR.IMediator _mediatR;
+    private NimbleMediator.Contracts.IMediator _nimbleMediator;
 
     [Benchmark]
     public async Task<string> MediatR_Send()
