@@ -10,9 +10,9 @@ namespace NimbleMediator.Implementations;
 public partial class Mediator : IMediator
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly Dictionary<Type, NotificationPublisherType> _publisherTypeMappings;
+    private readonly Dictionary<Type, Type> _publisherTypeMappings;
 
-    public Mediator(IServiceProvider serviceProvider, Dictionary<Type, NotificationPublisherType> publisherTypeMappings)
+    public Mediator(IServiceProvider serviceProvider, Dictionary<Type, Type> publisherTypeMappings)
     {
         _serviceProvider = serviceProvider;
         _publisherTypeMappings = publisherTypeMappings;

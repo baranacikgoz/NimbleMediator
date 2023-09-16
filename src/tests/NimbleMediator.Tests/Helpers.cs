@@ -11,7 +11,7 @@ public static class Helpers
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterHandlersFromAssembly(typeof(MyRequestWithResponse).Assembly);
+            config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
         });
 
         return services.BuildServiceProvider();

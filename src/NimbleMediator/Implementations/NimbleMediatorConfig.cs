@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NimbleMediator.Contracts;
 using NimbleMediator.Implementations;
+using NimbleMediator.NotificationPublishers;
 
 namespace NimbleMediator;
 
@@ -12,15 +14,14 @@ namespace NimbleMediator;
 public class NimbleMediatorConfig
 {
     private readonly IServiceCollection _services;
-    private readonly Dictionary<Type, NotificationPublisherType> _publisherTypeMappings;
-    private NotificationPublisherType _defaultPublisherType = NotificationPublisherType.ForeachAwait;
+    private readonly Dictionary<Type, Type> _publisherTypeMappings;
+    private Type _defaultPublisherType = typeof(ForeachAwaitRobustPublisher);
+    private ServiceLifetime _defaultPublisherLifetime = ServiceLifetime.Singleton;
 
-    public NimbleMediatorConfig(IServiceCollection services)
+    public NimbleMediatorConfig(IServiceCollection services, Dictionary<Type, Type> publisherTypeMappings)
     {
         _services = services;
-        var serviceCollection = _services.BuildServiceProvider();
-
-        _publisherTypeMappings = serviceCollection.GetRequiredService<Dictionary<Type, NotificationPublisherType>>();
+        _publisherTypeMappings = publisherTypeMappings;
     }
 
     /// <summary>
@@ -29,18 +30,39 @@ public class NimbleMediatorConfig
     /// You can change the publisher type for a notification type by calling <see cref="SetNotificationPublisherType{TNotification}(NotificationPublisherType)"/>.
     /// </summary>
     /// <param name="assembly"></param>
-    public void RegisterHandlersFromAssembly(Assembly assembly)
+    public void RegisterServicesFromAssembly(Assembly assembly)
     {
         RegisterRequestsFromAssembly(assembly);
         RegisterNotificationsFromAssembly(assembly);
+
+        // Register default publisher type
+        TryAdd(_services, _defaultPublisherType, _defaultPublisherLifetime);
+    }
+
+    /// <summary>
+    /// Sets the default publisher type for notifications.
+    /// </summary>
+    /// <param name="lifetime"></param>
+    public void SetDefaultNotificationPublisherLifetime(ServiceLifetime lifetime)
+    {
+        _defaultPublisherLifetime = lifetime;
+
+        TryAdd(_services, _defaultPublisherType, _defaultPublisherLifetime);
     }
 
     /// <summary>
     /// Sets the default publisher type for notifications.
     /// </summary>
     /// <param name="publisherType"></param>
-    public void SetDefaultNotificationPublisherType(NotificationPublisherType publisherType)
-        => _defaultPublisherType = publisherType;
+    public void SetDefaultNotificationPublisherType<TNotificationPublisher>()
+        where TNotificationPublisher : INotificationPublisher
+    {
+        var publisherType = typeof(TNotificationPublisher);
+        _defaultPublisherType = publisherType;
+
+        // If the publisher is not registered yet, we have to register it as well. 
+        TryAdd(_services, publisherType, _defaultPublisherLifetime);
+    }
 
     /// <summary>
     /// Sets the publisher type for the given notification type.
@@ -48,17 +70,16 @@ public class NimbleMediatorConfig
     /// <typeparam name="TNotification"></typeparam>
     /// <param name="publisherType"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void SetNotificationPublisherType<TNotification>(NotificationPublisherType publisherType)
+    public void SetNotificationPublisherType<TNotification, TNotificationPublisher>(ServiceLifetime? lifetime = null)
         where TNotification : INotification
+        where TNotificationPublisher : INotificationPublisher
     {
         var notificationType = typeof(TNotification);
-
-        if (!_publisherTypeMappings.ContainsKey(notificationType))
-        {
-            throw new InvalidOperationException($"Notification {notificationType.Name} not found");
-        }
+        var publisherType = typeof(TNotificationPublisher);
 
         _publisherTypeMappings[notificationType] = publisherType;
+
+        TryAdd(_services, publisherType, lifetime ?? _defaultPublisherLifetime);
     }
 
     private void RegisterRequestsFromAssembly(Assembly assembly)
@@ -101,6 +122,24 @@ public class NimbleMediatorConfig
                     }
                 }
             }
+        }
+    }
+
+    private static void TryAdd(IServiceCollection services, Type type, ServiceLifetime lifetime)
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                services.TryAddSingleton(type);
+                break;
+
+            case ServiceLifetime.Scoped:
+                services.TryAddScoped(type);
+                break;
+
+            case ServiceLifetime.Transient:
+                services.TryAddTransient(type);
+                break;
         }
     }
 }

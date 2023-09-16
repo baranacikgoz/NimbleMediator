@@ -9,22 +9,19 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddNimbleMediator(this IServiceCollection services, Action<NimbleMediatorConfig> configAction)
     {
-        var requestsAndHandlerTypes = new Dictionary<Type, Type>();
-        services.AddSingleton(requestsAndHandlerTypes);
-
-        var publisherTypeMappings = new Dictionary<Type, NotificationPublisherType>();
+        var publisherTypeMappings = new Dictionary<Type, Type>();
         services.AddSingleton(publisherTypeMappings);
 
         services.AddSingleton(sp =>
             new Mediator(
                     sp,
-                    sp.GetRequiredService<Dictionary<Type, NotificationPublisherType>>()));
+                    sp.GetRequiredService<Dictionary<Type, Type>>()));
 
         services.AddSingleton<ISender>(sp => sp.GetRequiredService<Mediator>());
         services.AddSingleton<IPublisher>(sp => sp.GetRequiredService<Mediator>());
         services.AddSingleton<IMediator>(sp => sp.GetRequiredService<Mediator>());
 
-        var config = new NimbleMediatorConfig(services);
+        var config = new NimbleMediatorConfig(services, publisherTypeMappings);
 
         configAction(config);
 
