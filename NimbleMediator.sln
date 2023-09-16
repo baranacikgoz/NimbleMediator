@@ -33,6 +33,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbleMediator.Tests", "src\tests\NimbleMediator.Tests\NimbleMediator.Tests.csproj", "{6EE21F4D-7B75-488F-88BC-89FBEEC5E816}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B9C29E78-160E-45E7-AC68-F06B59D4659F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbleMediator.Samples.ForeachAwaitRobustPublisher", "samples\NimbleMediator.Samples.ForeachAwaitRobustPublisher\NimbleMediator.Samples.ForeachAwaitRobustPublisher.csproj", "{8349BD67-E9D0-457E-85CE-4B666654D55D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbleMediator.Samples.ForechAwaitStopOnFirstExceptionPublisher", "samples\NimbleMediator.Samples.ForechAwaitStopOnFirstExceptionPublisher\NimbleMediator.Samples.ForechAwaitStopOnFirstExceptionPublisher.csproj", "{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,14 @@ Global
 		{6EE21F4D-7B75-488F-88BC-89FBEEC5E816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE21F4D-7B75-488F-88BC-89FBEEC5E816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE21F4D-7B75-488F-88BC-89FBEEC5E816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8349BD67-E9D0-457E-85CE-4B666654D55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8349BD67-E9D0-457E-85CE-4B666654D55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8349BD67-E9D0-457E-85CE-4B666654D55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8349BD67-E9D0-457E-85CE-4B666654D55D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +74,8 @@ Global
 		{3379F0DA-B4C0-447C-B406-AE0F93E5510C} = {06B6F282-1C5D-4E62-B583-93D010553BFC}
 		{749D1503-5255-4C90-BFF9-7FAD135C4AE1} = {A2AD59B6-3D96-441B-88F8-79CD2C9EEBF7}
 		{6EE21F4D-7B75-488F-88BC-89FBEEC5E816} = {3379F0DA-B4C0-447C-B406-AE0F93E5510C}
+		{8349BD67-E9D0-457E-85CE-4B666654D55D} = {B9C29E78-160E-45E7-AC68-F06B59D4659F}
+		{EF0E0F07-7884-4EF7-B9AC-C7967DCA43A9} = {B9C29E78-160E-45E7-AC68-F06B59D4659F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {475E1217-4E58-4412-B9AE-66AB47E6C6F2}
