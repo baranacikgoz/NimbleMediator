@@ -1,5 +1,7 @@
+using System.Runtime.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using NimbleMediator.Contracts;
+using NimbleMediator.NotificationPublishers;
 using NimbleMediator.ServiceExtensions;
 namespace NimbleMediator.Tests;
 
@@ -10,7 +12,14 @@ public class ServiceCollectionExtensionsTests
 
     public ServiceCollectionExtensionsTests()
     {
-        _serviceProvider = Helpers.SetupServiceProvider();
+        var services = new ServiceCollection();
+
+        services.AddNimbleMediator(config =>
+        {
+            config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
+        });
+
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     private readonly IServiceProvider _serviceProvider;
@@ -53,6 +62,61 @@ public class ServiceCollectionExtensionsTests
         var requestHandler = _serviceProvider.GetService<IRequestHandler<MyRequestWithoutResponse>>();
 
         Assert.NotNull(requestHandler);
+    }
+
+    [Fact]
+    public void DI_Should_Resolve_ForeachAwaitRobustPublisher()
+    {
+
+        var services = new ServiceCollection();
+
+        services.AddNimbleMediator(config =>
+        {
+            config.SetDefaultNotificationPublisherType<ForeachAwaitRobustPublisher>();
+            config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var notificationHandler = serviceProvider.GetService<ForeachAwaitRobustPublisher>();
+
+        Assert.NotNull(notificationHandler);
+        Assert.True(notificationHandler is ForeachAwaitRobustPublisher publisher);
+    }
+
+    [Fact]
+    public void DI_Should_Resolve_ForeachAwaitStopOnFirstExceptionPublisher()
+    {
+        var services = new ServiceCollection();
+
+        services.AddNimbleMediator(config =>
+        {
+            config.SetDefaultNotificationPublisherType<ForeachAwaitStopOnFirstExceptionPublisher>();
+            config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var notificationHandler = serviceProvider.GetService<ForeachAwaitStopOnFirstExceptionPublisher>();
+
+        Assert.NotNull(notificationHandler);
+        Assert.True(notificationHandler is ForeachAwaitStopOnFirstExceptionPublisher publisher);
+    }
+
+    [Fact]
+    public void DI_Should_Resolve_TaskWhenAllPublisher()
+    {
+        var services = new ServiceCollection();
+
+        services.AddNimbleMediator(config =>
+        {
+            config.SetDefaultNotificationPublisherType<TaskWhenAllPublisher>();
+            config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        var notificationHandler = serviceProvider.GetService<TaskWhenAllPublisher>();
+
+        Assert.NotNull(notificationHandler);
+        Assert.True(notificationHandler is TaskWhenAllPublisher publisher);
     }
 
 }
