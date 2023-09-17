@@ -44,16 +44,10 @@ It is ``ForeachAwaitRobustPublisher`` by default if you don't set it.
 
 ```csharp
 
-    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher();
-
-```
-
-or 
-
-```csharp
-
+    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher>();
+    or
     cfg.SetDefaultNotificationPublisher<TaskWhenAllPublisher>();
-
+    or your custom publisher.
 ```
 
 #### Set default publisher's lifetime (optional)
@@ -69,7 +63,7 @@ or
 
 ```csharp
 
-    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher(ServiceLifetime.Transient);
+    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher>(ServiceLifetime.Transient);
 
 ```
 
