@@ -15,7 +15,7 @@ public class ForeachAwaitBenchmark
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherType<ForeachAwaitStopOnFirstExceptionPublisher>();
+            config.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher>();
             config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequestWithoutResponse).Assembly);
         });
 

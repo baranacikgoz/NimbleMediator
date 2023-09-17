@@ -7,7 +7,7 @@ var services = new ServiceCollection();
 
 services.AddNimbleMediator(config =>
 {
-    config.SetDefaultNotificationPublisherType<ForeachAwaitStopOnFirstExceptionPublisher>();
+    config.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher>();
     config.RegisterServicesFromAssembly(typeof(MyNotification).Assembly);
 });
 

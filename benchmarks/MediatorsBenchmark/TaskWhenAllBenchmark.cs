@@ -16,7 +16,7 @@ public class TaskWhenAllBenchmark
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherType<NimbleMediator.NotificationPublishers.TaskWhenAllPublisher>();
+            config.SetDefaultNotificationPublisher<NimbleMediator.NotificationPublishers.TaskWhenAllPublisher>();
             config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequestWithoutResponse).Assembly);
 
         });

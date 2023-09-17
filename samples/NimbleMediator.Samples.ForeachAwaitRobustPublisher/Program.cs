@@ -10,7 +10,7 @@ var services = new ServiceCollection();
 
 services.AddNimbleMediator(config =>
 {
-    config.SetDefaultNotificationPublisherType<ForeachAwaitRobustPublisher>();
+    config.SetDefaultNotificationPublisher<ForeachAwaitRobustPublisher>();
     config.RegisterServicesFromAssembly(typeof(MyNotification).Assembly);
 });
 

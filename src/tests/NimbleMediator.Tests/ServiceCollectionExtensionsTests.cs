@@ -75,7 +75,7 @@ public class ServiceCollectionExtensionsTests
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherType<ForeachAwaitRobustPublisher>();
+            config.SetDefaultNotificationPublisher<ForeachAwaitRobustPublisher>();
             config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
         });
 
@@ -93,7 +93,7 @@ public class ServiceCollectionExtensionsTests
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherType<ForeachAwaitStopOnFirstExceptionPublisher>();
+            config.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher>();
             config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
         });
 
@@ -111,7 +111,7 @@ public class ServiceCollectionExtensionsTests
 
         services.AddNimbleMediator(config =>
         {
-            config.SetDefaultNotificationPublisherType<TaskWhenAllPublisher>();
+            config.SetDefaultNotificationPublisher<TaskWhenAllPublisher>();
             config.RegisterServicesFromAssembly(typeof(MyRequestWithResponse).Assembly);
         });
 

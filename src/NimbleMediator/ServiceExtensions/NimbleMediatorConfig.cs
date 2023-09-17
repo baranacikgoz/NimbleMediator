@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NimbleMediator.Contracts;
-using NimbleMediator.Implementations;
 using NimbleMediator.NotificationPublishers;
 
-namespace NimbleMediator;
+namespace NimbleMediator.ServiceExtensions;
 
 /// <summary>
 /// Configuration for <see cref="IMediator"/>.
@@ -64,20 +62,22 @@ public class NimbleMediatorConfig
     /// Sets the default publisher type for notifications.
     /// </summary>
     /// <param name="lifetime"></param>
-    public void SetDefaultNotificationPublisherLifetime(ServiceLifetime lifetime)
-    {
-        _defaultPublisherLifetime = lifetime;
-    }
+    public void SetDefaultNotificationPublisherLifetime(ServiceLifetime lifetime) => _defaultPublisherLifetime = lifetime;
 
     /// <summary>
     /// Sets the default publisher type for notifications.
     /// </summary>
     /// <param name="publisherType"></param>
-    public void SetDefaultNotificationPublisherType<TNotificationPublisher>()
+    public void SetDefaultNotificationPublisher<TNotificationPublisher>(ServiceLifetime? lifetime = null)
         where TNotificationPublisher : INotificationPublisher
     {
         var publisherType = typeof(TNotificationPublisher);
         _defaultPublisherType = publisherType;
+
+        if (lifetime is not null)
+        {
+            SetDefaultNotificationPublisherLifetime(lifetime.Value);
+        }
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class NimbleMediatorConfig
     /// <typeparam name="TNotification"></typeparam>
     /// <param name="publisherType"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void SetNotificationPublisherType<TNotification, TNotificationPublisher>(ServiceLifetime? lifetime = null)
+    public void SetNotificationPublisher<TNotification, TNotificationPublisher>(ServiceLifetime? lifetime = null)
         where TNotification : INotification
         where TNotificationPublisher : INotificationPublisher
     {
@@ -113,7 +113,6 @@ public class NimbleMediatorConfig
             }
         }
     }
-
 
     private void RegisterNotificationsFromAssembly(Assembly assembly)
     {
