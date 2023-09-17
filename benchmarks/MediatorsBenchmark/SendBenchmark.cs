@@ -16,12 +16,12 @@ public class SendBenchmark
 
         services.AddNimbleMediator(config =>
         {
-            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
+            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequestWithoutResponse).Assembly);
         });
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(MediatRRequest).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(MediatRRequestWithoutResponse).Assembly);
         });
 
         var provider = services.BuildServiceProvider();
@@ -32,41 +32,89 @@ public class SendBenchmark
     private readonly MediatR.IMediator _mediatR;
     private readonly NimbleMediator.Contracts.IMediator _nimbleMediator;
 
+    private readonly NimbleMediatorRequestWithoutResponse _nimbleMediatorRequestWithoutResponse = new("Test");
+    private readonly NimbleMediatorRequestWithResponse _nimbleMediatorRequestWithResponse = new("Test");
+    private readonly MediatRRequestWithoutResponse _mediatRRequestWithoutResponse = new("Test");
+    private readonly MediatRRequestWithResponse _mediatRRequestWithResponse = new("Test");
+    private readonly NimbleMediatorRequestWithoutResponseThrowsException _nimbleMediatorRequestWithoutResponseThrowsException = new("Test");
+    private readonly MediatRRequestWithoutResponseThrowsException _mediatRRequestWithoutResponseThrowsException = new("Test");
+    private readonly NimbleMediatorRequestWithResponseThrowsException _nimbleMediatorRequestWithResponseThrowsException = new("Test");
+    private readonly MediatRRequestWithResponseThrowsException _mediatRRequestWithResponseThrowsException = new("Test");
+
+
     [Benchmark]
-    public async ValueTask<string> NimbleMediator_Send()
+    public async ValueTask NimbleMediator_Send_WithoutResponse()
     {
-        return await _nimbleMediator.SendAsync<NimbleMediatorRequest, string>(new NimbleMediatorRequest(), CancellationToken.None);
+        await _nimbleMediator.SendAsync(_nimbleMediatorRequestWithoutResponse, CancellationToken.None);
     }
 
     [Benchmark]
-    public async Task<string> MediatR_Send()
+    public async ValueTask MediatR_Send_WithoutResponse()
     {
-        return await _mediatR.Send(new MediatRRequest(), CancellationToken.None);
+        await _mediatR.Send(_mediatRRequestWithoutResponse, CancellationToken.None);
     }
 
     [Benchmark]
-    public async ValueTask<string> NimbleMediator_Send_ThrowsException()
+    public async ValueTask<string> NimbleMediator_Send_WithResponse()
+    {
+        return await _nimbleMediator.SendAsync<NimbleMediatorRequestWithResponse, string>(_nimbleMediatorRequestWithResponse, CancellationToken.None);
+    }
+
+    [Benchmark]
+    public async Task<string> MediatR_Send_WithResponse()
+    {
+        return await _mediatR.Send(_mediatRRequestWithResponse, CancellationToken.None);
+    }
+
+    [Benchmark]
+    public async Task NimbleMediator_Send_WithoutResponse_ThrowsException()
     {
         try
         {
-            return await _nimbleMediator.SendAsync<NimbleMediatorRequestThrowsException, string>(new NimbleMediatorRequestThrowsException(), CancellationToken.None);
+            await _nimbleMediator.SendAsync(_nimbleMediatorRequestWithoutResponseThrowsException, CancellationToken.None);
         }
-        catch (Exception)
+        catch
         {
-            return "Benchmark";
+            // ignored
         }
     }
 
     [Benchmark]
-    public async Task<string> MediatR_Send_ThrowsException()
+    public async Task MediatR_Send_WithoutResponse_ThrowsException()
     {
         try
         {
-            return await _mediatR.Send(new MediatRRequestThrowsException(), CancellationToken.None);
+            await _mediatR.Send(_mediatRRequestWithoutResponseThrowsException, CancellationToken.None);
         }
-        catch (Exception)
+        catch
         {
-            return "Benchmark";
+            // ignored
+        }
+    }
+
+    [Benchmark]
+    public async Task<string> NimbleMediator_Send_WithResponse_ThrowsException()
+    {
+        try
+        {
+            return await _nimbleMediator.SendAsync<NimbleMediatorRequestWithResponseThrowsException, string>(_nimbleMediatorRequestWithResponseThrowsException, CancellationToken.None);
+        }
+        catch
+        {
+            return "Test";
+        }
+    }
+
+    [Benchmark]
+    public async Task<string> MediatR_Send_WithResponse_ThrowsException()
+    {
+        try
+        {
+            return await _mediatR.Send(_mediatRRequestWithResponseThrowsException, CancellationToken.None);
+        }
+        catch
+        {
+            return "Test";
         }
     }
 }

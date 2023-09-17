@@ -17,13 +17,13 @@ public class TaskWhenAllBenchmark
         services.AddNimbleMediator(config =>
         {
             config.SetDefaultNotificationPublisherType<NimbleMediator.NotificationPublishers.TaskWhenAllPublisher>();
-            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequest).Assembly);
+            config.RegisterServicesFromAssembly(typeof(NimbleMediatorRequestWithoutResponse).Assembly);
 
         });
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(MediatRRequest).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(MediatRRequestWithoutResponse).Assembly);
             cfg.NotificationPublisher = new MediatR.NotificationPublishers.TaskWhenAllPublisher();
         });
 
