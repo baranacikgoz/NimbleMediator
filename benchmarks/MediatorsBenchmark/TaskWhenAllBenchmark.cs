@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NimbleMediator.ServiceExtensions;
 using NimbleMediator.Implementations;
 using MediatR.NotificationPublishers;
+using BenchmarkDotNet.Configs;
 
 namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 public class TaskWhenAllBenchmark
 {
     public TaskWhenAllBenchmark()
@@ -43,19 +45,19 @@ public class TaskWhenAllBenchmark
     private readonly MediatRNotificationWith3Handlers _mediatRNotificationWith3Handlers = new("Test");
     private readonly MediatRNotificationWith3Handlers1ThrowsException _mediatRNotificationWith3Handlers1ThrowsException = new("Test");
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_1_handler()
     {
         await _nimbleMediator.PublishAsync(_nimbleMediatorNotificationWith1Handler, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_1_handler()
     {
         await _mediatR.Publish(_mediatRNotificationWithSingleHandler, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_1_handler_ThrowsException()
     {
         try
@@ -68,7 +70,7 @@ public class TaskWhenAllBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_1_handler_ThrowsException()
     {
         try
@@ -81,19 +83,19 @@ public class TaskWhenAllBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_3_handlers()
     {
         await _nimbleMediator.PublishAsync(_nimbleMediatorNotificationWith3Handlers, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers()
     {
         await _mediatR.Publish(_mediatRNotificationWith3Handlers, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_TaskWhenAll_notification_has_3_handlers_1_ThrowsException()
     {
         try
@@ -106,7 +108,7 @@ public class TaskWhenAllBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark]
     public async Task MediatR_Publish_TaskWhenAll_notification_has_3_handlers_1_ThrowsException()
     {
         try

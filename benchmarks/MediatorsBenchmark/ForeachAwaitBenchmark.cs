@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 using Microsoft.Extensions.DependencyInjection;
 using NimbleMediator;
 using NimbleMediator.NotificationPublishers;
@@ -7,6 +8,7 @@ using NimbleMediator.ServiceExtensions;
 namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 public class ForeachAwaitBenchmark
 {
     public ForeachAwaitBenchmark()
@@ -43,19 +45,19 @@ public class ForeachAwaitBenchmark
     private readonly MediatRNotificationWith3Handlers _mediatRNotificationWith3Handlers = new("Test");
     private readonly MediatRNotificationWith3Handlers1ThrowsException _mediatRNotificationWith3Handlers1ThrowsException = new("Test");
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_ForeachAwait_notification_has_1_handler()
     {
         await _nimbleMediator.PublishAsync(_nimbleMediatorNotificationWith1Handler, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark]
     public async Task MediatR_Publish_ForeachAwait_notification_has_1_handler()
     {
         await _mediatR.Publish(_mediatRNotificationWith1Handler, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_ForeachAwait_notification_has_1_handler_ThrowsException()
     {
         try
@@ -68,7 +70,7 @@ public class ForeachAwaitBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark]
     public async Task MediatR_Publish_ForeachAwait_notification_has_1_handler_ThrowsException()
     {
         try
@@ -81,19 +83,19 @@ public class ForeachAwaitBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_ForeachAwait_notification_has_3_handlers()
     {
         await _nimbleMediator.PublishAsync(_nimbleMediatorNotificationWith3Handlers, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark]
     public async Task MediatR_Publish_ForeachAwait_notification_has_3_handlers()
     {
         await _mediatR.Publish(_mediatRNotificationWith3Handlers, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Publish_ForeachAwait_notification_has_3_handlers_1_throws_exception()
     {
         try
@@ -106,7 +108,7 @@ public class ForeachAwaitBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark]
     public async Task MediatR_Publish_ForeachAwait_notification_has_3_handlers_1_throws_exception()
     {
         try

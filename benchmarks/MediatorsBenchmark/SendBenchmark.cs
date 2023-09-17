@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NimbleMediator.ServiceExtensions;
 using NimbleMediator.Implementations;
 using MediatR.NotificationPublishers;
+using BenchmarkDotNet.Configs;
 
 namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 public class SendBenchmark
 {
     public SendBenchmark()
@@ -42,31 +44,31 @@ public class SendBenchmark
     private readonly MediatRRequestWithResponseThrowsException _mediatRRequestWithResponseThrowsException = new("Test");
 
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark(Baseline = true)]
     public async ValueTask NimbleMediator_Send_WithoutResponse()
     {
         await _nimbleMediator.SendAsync(_nimbleMediatorRequestWithoutResponse, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("1"), Benchmark]
     public async ValueTask MediatR_Send_WithoutResponse()
     {
         await _mediatR.Send(_mediatRRequestWithoutResponse, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark(Baseline = true)]
     public async ValueTask<string> NimbleMediator_Send_WithResponse()
     {
         return await _nimbleMediator.SendAsync<NimbleMediatorRequestWithResponse, string>(_nimbleMediatorRequestWithResponse, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("2"), Benchmark]
     public async Task<string> MediatR_Send_WithResponse()
     {
         return await _mediatR.Send(_mediatRRequestWithResponse, CancellationToken.None);
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark(Baseline = true)]
     public async Task NimbleMediator_Send_WithoutResponse_ThrowsException()
     {
         try
@@ -79,7 +81,7 @@ public class SendBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("3"), Benchmark]
     public async Task MediatR_Send_WithoutResponse_ThrowsException()
     {
         try
@@ -92,7 +94,7 @@ public class SendBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark(Baseline = true)]
     public async Task<string> NimbleMediator_Send_WithResponse_ThrowsException()
     {
         try
@@ -105,7 +107,7 @@ public class SendBenchmark
         }
     }
 
-    [Benchmark]
+    [BenchmarkCategory("4"), Benchmark]
     public async Task<string> MediatR_Send_WithResponse_ThrowsException()
     {
         try
