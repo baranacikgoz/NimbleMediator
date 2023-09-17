@@ -4,11 +4,10 @@ NimbleMediator is a significantly faster, lightweight and memory-efficient media
 
 ## Features
 
-- **Faster Performance**: Designed to offer a speed advantage over similar packages, providing quicker request and notification processing times. (***~2,5*** times faster than MediatR)
-- **Less Memory Usage**: optimized to minimize memory allocations, helping to reduce the overall memory footprint. (uses ***~8x*** less memory than MediatR)
+- **Faster Performance**: Designed to offer a speed advantage over similar packages, providing quicker request and notification processing times. (***~3,5*** times faster than MediatR)
+- **Less Memory Usage**: optimized to minimize memory allocations, helping to reduce the overall memory footprint. (uses ***~16x*** less memory than MediatR)
 - **Easy to Integrate**:  Can be easily integrated into existing .NET projects, offering a simple and similar IMediator, ISender, IPublisher interfacses.
-- **Individualized Publish Strategies**:  Allows for different publish strategies for each notification, enabling developers to choose between sequential or concurrent execution based on the specific requirements of their notification handlers.
-
+- **Individualized Notification Publishers**:  Allows for different publisher implementations for each notification, enabling developers to have the flexibility to choose the best publisher implementation for each notification. Also supports custom publisher implementations via INotificationPublisher interface.
 
 ## Getting Started
 
@@ -24,29 +23,108 @@ Register your handlers from the assembly:
 ```csharp
 
     services.AddNimbleMediator(cfg => {
-        cfg.RegisterHandlersFromAssembly(typeof(Startup).Assembly);
+        cfg.RegisterServicesFromAssembly(typeof(Startup).Assembly);
     });
 
 ```
 
-#### Set default publishing strategy
-Set the default publishing strategy for all notifications.
-It is ``NotificationPublisherType.Foreach`` by default if you don't set it.
-
+or from assemblies:
+    
 ```csharp
-
-    cfg.SetDefaultNotificationPublisherType(NotificationPublisherType.TaskWhenAll);
+    
+    services.AddNimbleMediator(cfg => {
+        cfg.RegisterServicesFromAssemblies(typeof(X).Assembly, typeof(Y).Assembly, typeof(Z).Assembly);
+    });
 
 ```
 
-#### Set an individual publishing strategy for a notification
-Even the default strategy might be different, you can set an individual strategy for a notification.
+#### Set default publisher (optional)
+Set the default publisher implementation for all notifications.
+It is ``ForeachAwaitRobustPublisher`` by default if you don't set it.
 
 ```csharp
 
-    cfg.SetNotificationPublisherType<MyRequest1>(NotificationPublisherType.Foreach);
+    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher();
 
-    cfg.SetNotificationPublisherType<MyRequest2>(NotificationPublisherType.TaskWhenAll);
+```
+
+or 
+
+```csharp
+
+    cfg.SetDefaultNotificationPublisher<TaskWhenAllPublisher();
+
+```
+
+#### Set default publisher's lifetime (optional)
+Set the default publisher's lifetime. It is ``Singleton`` by default if you don't set it.
+
+```csharp
+
+    cfg.SetDefaultNotificationPublisherLifetime(ServiceLifetime.Transient);
+
+```
+
+or 
+
+```csharp
+
+    cfg.SetDefaultNotificationPublisher<ForeachAwaitStopOnFirstExceptionPublisher(ServiceLifetime.Transient);
+
+```
+
+#### Set a different publisher for a particular notification (optional)
+
+```csharp
+
+    cfg.SetNotificationPublisher<MyNotification, TaskWhenAllPublisher>();
+
+```
+
+you can even provide lifetime here:
+
+```csharp
+
+    cfg.SetNotificationPublisher<MyNotification, TaskWhenAllPublisher>(ServiceLifetime.Singleton);
+
+```
+
+##### Default publishers
+1. ``ForeachAwaitRobustPublisher``: Executes all handlers in a sequential manner. If any of the handlers throws an exception, it will be caught and will thrown after all handlers are executed. Ensures that all handlers are executed even if one of them throws an exception.
+
+2. ``ForeachAwaitStopOnFirstExceptionPublisher``: Executes all handlers in a sequential manner. If any of the handlers throws an exception, will be caught and be thrown immediately. Stops executing handlers if one of them throws an exception.
+
+3. ``TaskWhenAllPublisher``: Executes all handlers in a concurrent manner. If any of the handlers throws an exception, it will be caught and will thrown after all handlers are executed. Ensures that all handlers are executed even if one of them throws an exception.
+
+##### Custom publishers
+You can implement your own publisher by implementing ``INotificationPublisher`` interface.
+
+```csharp
+
+    public class MyOwnCustomPublisher : INotificationPublisher
+    {
+        public async Task PublishAsync<TNotification>(TNotification notification, IEnumerable<INotificationHandler<TNotification>> handlers, CancellationToken cancellationToken) 
+            where TNotification : INotification
+        {
+            // Implement
+        }
+    }
+
+```
+
+And set it as default publisher:
+
+```csharp
+
+    cfg.SetDefaultNotificationPublisher<MyOwnCustomPublisher>();
+
+```
+
+Or set it just for a particular notification:
+
+```csharp
+
+    cfg.SetNotificationPublisher<MyNotification, MyOwnCustomPublisher>();
 
 ```
 
@@ -105,11 +183,16 @@ Define your notifications and handlers as you would with any other mediator libr
 
 ### Performance & Benchmarks
 
-NimbleMediator is backed by Dictionaries to hold type informations etc instead of relying on runtime reflection. This approach provides a significant performance advantage over other mediator libraries.
+NimbleMediator is directly depends DI container to get handlers instead of relying on runtime reflection. This approach provides a significant performance advantage over other mediator libraries.
 
-NimbleMediator is currently approximately **2,5** times faster than MediatR and uses almost **~8x** less memory.
+NimbleMediator is currently **3,5** times faster and uses **16x** less memory than MediatR in some cases.
 
-![benchmarks/benchmarks.png](https://github.com/baranacikgoz/NimbleMediator/blob/0bd3f27bb17ca6d064dfc5307c1e16215616139e/benchmarks/benchmarks.png)
+![send_benchmark](benchmarks/send_benchmark.png)
+
+![publish_foreachawait_benchmark](benchmarks/publish_foreachawait_benchmark.png)
+
+![publish_taskwhenall_benchmark](benchmarks/publish_taskwhenall_benchmark.png)
+
 
 ### Contributing
 

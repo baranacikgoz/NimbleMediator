@@ -28,7 +28,7 @@
 
   <PropertyGroup>
     <PackageId>NimbleMediator</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.1.0</Version>
     <Authors>Baran Açıkgöz</Authors>
     <Description>Significantly faster and memory optimized mediator implementation.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -44,7 +44,16 @@
     <PackageIcon>logo_128.png</PackageIcon>
 
     <ReleaseNotes>
-      - Registered ISender and IPublisher also to the DI. This was forgotten in the initial release.
+      - Removed the type dictionary for SendAsync, now directly depends on the DI container to
+      retrieve the handler.
+      - Improved performance, now up to 3.5x faster and utilizes up to 16x less memory in certain
+      cases.
+      - Fixed the method call order dependency in NimbleMediatorConfig; it is now order-independent.
+      - Overhauled notification handling; now supports notification publisher implementations via
+      INotificationPublisher. Now maintains a Dictionary for notifications.
+      - Added 3 default notification publishers: ForeachAwaitRobustPublisher,
+      ForeachAwaitStopOnFirstExceptionPublisher, and TaskWhenAllPublisher.
+      - Made minor changes to method names and signatures in NimbleMediatorConfig.
     </ReleaseNotes>
   </PropertyGroup>
 
