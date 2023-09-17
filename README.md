@@ -39,7 +39,7 @@ or from assemblies:
 ```
 
 #### Set default publisher (optional)
-Set the default publisher implementation for all notifications.
+Set the default publisher implementation for notifications.
 It is ``ForeachAwaitRobustPublisher`` by default if you don't set it.
 
 ```csharp
@@ -52,7 +52,7 @@ or
 
 ```csharp
 
-    cfg.SetDefaultNotificationPublisher<TaskWhenAllPublisher();
+    cfg.SetDefaultNotificationPublisher<TaskWhenAllPublisher>();
 
 ```
 
