@@ -25,6 +25,8 @@ public static class ServiceCollectionExtensions
 
         configAction(config);
 
+        config.RegisterServicesInternal();
+
         return services;
     }
 }

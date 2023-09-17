@@ -31,7 +31,6 @@ public partial class Mediator
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
     {
-
         var handler = _serviceProvider.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
         return handler.HandleAsync(request, cancellationToken);
     }

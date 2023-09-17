@@ -30,6 +30,7 @@ public class ServiceCollectionExtensionsTests
         var sender = _serviceProvider.GetService<ISender>();
 
         Assert.NotNull(sender);
+        Assert.True(sender is ISender s);
     }
 
     [Fact]
@@ -38,6 +39,7 @@ public class ServiceCollectionExtensionsTests
         var publisher = _serviceProvider.GetService<IPublisher>();
 
         Assert.NotNull(publisher);
+        Assert.True(publisher is IPublisher p);
     }
 
     [Fact]
@@ -46,6 +48,7 @@ public class ServiceCollectionExtensionsTests
         var mediator = _serviceProvider.GetService<IMediator>();
 
         Assert.NotNull(mediator);
+        Assert.True(mediator is IMediator m);
     }
 
     [Fact]
