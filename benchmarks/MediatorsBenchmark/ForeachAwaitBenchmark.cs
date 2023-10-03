@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using MediatorsBenchmark;
 using Microsoft.Extensions.DependencyInjection;
 using NimbleMediator;
 using NimbleMediator.NotificationPublishers;
@@ -9,6 +10,7 @@ namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+[HideColumns(new string[] { "Error", "StdDev", "RatioSD", "Gen0" })]
 public class ForeachAwaitBenchmark
 {
     public ForeachAwaitBenchmark()

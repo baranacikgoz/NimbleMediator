@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NimbleMediator.Contracts;
+using NimbleMediator.Implementations;
 using NimbleMediator.NotificationPublishers;
 
 namespace NimbleMediator.ServiceExtensions;
@@ -12,16 +13,13 @@ namespace NimbleMediator.ServiceExtensions;
 public class NimbleMediatorConfig
 {
     private readonly IServiceCollection _services;
-    private readonly Dictionary<Type, Type> _publisherTypeMappings;
+    private readonly Dictionary<Type, Type> _publisherTypeMappings = new();
     private Type _defaultPublisherType = typeof(ForeachAwaitRobustPublisher);
     private ServiceLifetime _defaultPublisherLifetime = ServiceLifetime.Singleton;
+    private ServiceLifetime _mediatorLifetime = ServiceLifetime.Scoped;
     private readonly HashSet<Assembly> _assemblies = new();
 
-    public NimbleMediatorConfig(IServiceCollection services, Dictionary<Type, Type> publisherTypeMappings)
-    {
-        _services = services;
-        _publisherTypeMappings = publisherTypeMappings;
-    }
+    public NimbleMediatorConfig(IServiceCollection services) => _services = services;
 
     /// <summary>
     /// Registers all requests, notifications and respective handlers from the given assembly.
@@ -42,21 +40,10 @@ public class NimbleMediatorConfig
     }
 
     /// <summary>
-    /// The public Register methods are actually just adds assemblies to a hashset, not registering them immediately.
-    /// This is needed for the config to not to be dependent on the order of the calls.
-    /// This method is called internally to register all marked assemblies.
+    /// Sets the lifetime of the mediator implementation and IMediator, ISender, IPublisher interfaces.
     /// </summary>
-    internal void RegisterServicesInternal()
-    {
-        foreach (var assembly in _assemblies)
-        {
-            RegisterRequestsFromAssembly(assembly);
-            RegisterNotificationsFromAssembly(assembly);
-        }
-
-        // Register default publisher type if not provided by user.
-        TryAdd(_services, _defaultPublisherType, _defaultPublisherLifetime);
-    }
+    /// <param name="lifetime"></param>
+    public void SetMediatorLifetime(ServiceLifetime lifetime) => _mediatorLifetime = lifetime;
 
     /// <summary>
     /// Sets the default publisher type for notifications.
@@ -98,6 +85,48 @@ public class NimbleMediatorConfig
         TryAdd(_services, publisherType, lifetime ?? _defaultPublisherLifetime);
     }
 
+    /// <summary>
+    /// The public Register methods are actually just adds assemblies to a hashset, not registering them immediately.
+    /// This is needed for the config to not to be dependent on the order of the calls.
+    /// This method is called internally to register all marked assemblies.
+    /// </summary>
+    internal void RegisterServicesInternal()
+    {
+        RegisterMediatorImplementationAndInterfaces(_services, _mediatorLifetime, _publisherTypeMappings);
+
+        foreach (var assembly in _assemblies)
+        {
+            RegisterRequestsFromAssembly(assembly);
+            RegisterNotificationsFromAssembly(assembly);
+        }
+
+        // Register default publisher type if not provided by user.
+        TryAdd(_services, _defaultPublisherType, _defaultPublisherLifetime);
+    }
+
+    private static void RegisterMediatorImplementationAndInterfaces(IServiceCollection services, ServiceLifetime mediatorLifetime, Dictionary<Type, Type> publisherTypeMappings)
+    {
+        services.Add(
+            new ServiceDescriptor(typeof(Mediator),
+            sp => new Mediator(sp, publisherTypeMappings),
+            mediatorLifetime));
+
+        services.Add(
+            new ServiceDescriptor(typeof(IMediator),
+            sp => sp.GetRequiredService<Mediator>(),
+            mediatorLifetime));
+
+        services.Add(
+            new ServiceDescriptor(typeof(ISender),
+            sp => sp.GetRequiredService<Mediator>(),
+            mediatorLifetime));
+
+        services.Add(
+            new ServiceDescriptor(typeof(IPublisher),
+            sp => sp.GetRequiredService<Mediator>(),
+            mediatorLifetime));
+    }
+
     private void RegisterRequestsFromAssembly(Assembly assembly)
     {
         foreach (var type in assembly.GetTypes())
@@ -127,10 +156,8 @@ public class NimbleMediatorConfig
 
                     _services.AddTransient(@interface, handlerType);
 
-                    if (!_publisherTypeMappings.ContainsKey(notificationType))
-                    {
-                        _publisherTypeMappings.Add(notificationType, _defaultPublisherType);
-                    }
+                    _publisherTypeMappings.TryAdd(notificationType, _defaultPublisherType);
+
                 }
             }
         }

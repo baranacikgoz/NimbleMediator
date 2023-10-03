@@ -11,8 +11,6 @@ public class SenderTests
     }
     private readonly ISender _sender;
 
-
-
     [Fact]
     public async Task SendAsync_Should_Handle_Request()
     {

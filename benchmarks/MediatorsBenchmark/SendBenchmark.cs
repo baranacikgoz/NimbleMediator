@@ -10,6 +10,7 @@ namespace MediatorsBenchmark;
 
 [MemoryDiagnoser]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+[HideColumns(new string[] { "Error", "StdDev", "RatioSD", "Gen0" })]
 public class SendBenchmark
 {
     public SendBenchmark()

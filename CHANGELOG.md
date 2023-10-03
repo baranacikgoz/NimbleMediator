@@ -14,3 +14,7 @@
 - Overhauled notification handling; now supports notification publisher implementations via INotificationPublisher. Now maintains a Dictionary<Type, Type> for notifications.
 - Added 3 default notification publishers: ForeachAwaitRobustPublisher, ForeachAwaitStopOnFirstExceptionPublisher, and TaskWhenAllPublisher.
 - Made minor changes to method names and signatures in NimbleMediatorConfig.
+
+## [1.2.0]
+- Mediator implementation was singleton before, with this version it is **scoped** by default.
+- Added an api for explicitly setting the desired lifetime of the mediator.
